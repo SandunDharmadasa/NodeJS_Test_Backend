@@ -1,9 +1,11 @@
 const Cart = require('../models/cart');
 const asyncHandler = require('express-async-handler');
 
+//Add Items to the cart
 const addToCart = asyncHandler(async (req, res) => {
     const { name, amount, totalPrice } = req.body;
 
+    //Validations
     if(!name || !amount || !totalPrice) {
         return res.status(400).json({
             success: false,
@@ -11,10 +13,10 @@ const addToCart = asyncHandler(async (req, res) => {
         });
     }
 
-    //check if product already exists
+    //check if item already exists in the cart
     const cart = await Cart.findOne({ name });
 
-    //if product exists
+    //if item exists in the cart
     if (cart) {
         return res.status(400).json({
             success: false,
@@ -22,14 +24,14 @@ const addToCart = asyncHandler(async (req, res) => {
         });
     }
 
-    //create product
+    //create cart item
     const newCartItem = new Cart({
         name,
         amount,
         totalPrice
     });
 
-    //save feedback
+    //save item into the cart
     await newCartItem.save();
 
     if (newCartItem) {
@@ -47,6 +49,7 @@ const addToCart = asyncHandler(async (req, res) => {
     }
 });
 
+//Retrieve all the items in the cart
 const getCart = asyncHandler(async (req, res) => {
     const cart = await Cart.find();
 
@@ -65,9 +68,72 @@ const getCart = asyncHandler(async (req, res) => {
     }
 });
 
+//Update items in the cart
+const editCart = asyncHandler(async (req, res) => {
+    const cart = await Cart.findById(req.params.id);
+
+    if (!cart) {
+        return res.status(400).json({
+            success: false,
+            message: 'No items found'
+        });
+    } else {
+        const { name, amount, totalPrice } = req.body;
+
+        cart.name = name;
+        cart.amount = amount;
+        cart.totalPrice= totalPrice;
+
+        await cart.save();
+
+        res.status(200).json({
+            success: true,
+            data: cart
+        });
+    }
+});
+
+//Delete items in the cart
+const deleteCart = asyncHandler(async (req, res)  => {
+    const cart = await Cart.findById(req.params.id);
+
+    if (!cart) {
+        return res.status(400).json({
+            success: false,
+            message: 'No data found'
+        });
+    } else {
+        await cart.remove();
+        
+        res.status(200).json({
+            success: true,
+            message: 'Item deleted successfully'
+        });
+    }
+});
+
+//Remove all the items in the cart
+const deleteAll = asyncHandler(async (req, res) => {
+    const cart = await Cart.remove();
+
+    if (!cart) {
+        return res.status(400).json({
+            success: false,
+            message: 'No data found'
+        });
+    } else {
+        res.status(200).json({
+            success: true,
+            message: 'Cart deleted successfully'
+        });
+    }
+});
 
 
 module.exports = {
     addToCart,
-    getCart
+    getCart,
+    editCart,
+    deleteCart,
+    deleteAll
 };

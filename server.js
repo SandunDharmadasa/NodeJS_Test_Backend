@@ -16,10 +16,9 @@ app.use(bodyParser.json());
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    // useCreateIndex: true,
-    // useFindAndModify: false
 });
 
+//Connect to the database
 const connection = mongoose.connection;
 connection.once('open', () => {
     console.log('MongoDB database connection established successfully');
@@ -31,9 +30,14 @@ app.use(bodyParser.json());
 
 // ################## Routes start ####################//
 
+//Product Routes
 app.use('/product', require('./routes/productRoutes'));
 
+//Cart Routes
 app.use('/cart', require('./routes/cartRouters'));
+
+//Order Routes
+app.use('/order', require('./routes/orderRoutes'));
 
 // ################## Routes end ####################//
 

@@ -1,9 +1,11 @@
 const Products = require('../models/product');
 const asyncHandler = require('express-async-handler');
 
+//Add Products
 const addProduct = asyncHandler(async (req, res) => {
     const { name, description, qty, price } = req.body;
 
+    //Validation
     if(!name || !description || !qty || !price) {
         return res.status(400).json({
             success: false,
@@ -30,7 +32,7 @@ const addProduct = asyncHandler(async (req, res) => {
         price
     });
 
-    //save feedback
+    //save product
     await newProduct.save();
 
     if (newProduct) {
@@ -48,6 +50,7 @@ const addProduct = asyncHandler(async (req, res) => {
     }
 });
 
+//Retrieve all the products
 const getProducts = asyncHandler(async (req, res) => {
     const product = await Products.find();
 
