@@ -1,6 +1,8 @@
 const Cart = require('../models/cart');
 const asyncHandler = require('express-async-handler');
 
+//New commit
+
 //Add Items to the cart
 const addToCart = asyncHandler(async (req, res) => {
     const { name, amount, totalPrice } = req.body;
